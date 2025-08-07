@@ -280,7 +280,7 @@ class LicenController extends Controller
     {
         $anio_eval=$this->anio_uso();
 
-        return view('lic2019.reporte_evaluacion');
+        return view('licen.reporte_evaluacion');
     }
 
 

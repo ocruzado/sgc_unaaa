@@ -172,8 +172,8 @@ html, body {
                 <div class="form-group row mb-3">
                     <div class="col-md-1"></div>
                     <div class="col-md-10">
-                        <label class="form-label">Responsable:</label>
-                        <select id="id_oficina" class="single-select">
+                        <label class="form-label">Responsable:</label> 
+                        <select id="id_oficina" class="form-control select2">
                             <option value="">- - Seleccione ...</option>
                             @foreach($dt_oficinas as $ofi)
                                 <option value="{{ $ofi->id }}">{{ $ofi->nombre }}</option>
@@ -345,7 +345,6 @@ html, body {
                             <div id="div_indicadores"></div>
                         </div>
                         <div style="background-color: #F3FAFC;max-width: 100px;width:100px;margin-right: 15px;padding: 5px;">
-                            <div style="background-color: #7DA0B1;color: #fff;text-align: center;padding: 3px;border-radius: 5px 5px 0px 0px;" class="mb-2">MV</div>
                             <div id="div_mvs"></div>
                         </div>
 
@@ -366,15 +365,16 @@ html, body {
                                         <div class="col-lg-3">
                                             <select id="estado_doc" class="form-control">
                                                 <option value="">-- Estado --</option>
-                                                <option value="SM">SI</option>
-                                                <option value="PM">PARCIALMENTE</option>
-                                                <option value="NM">NO</option>
+                                                <option value="SM">CUMPLIDO</option>
+                                                <option value="PM">EN PROCESO</option>
+                                                <option value="NM">NO CUMPLIDO</option>
                                                 <option value="NP">No Aplica</option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
 
                             <br>
                             <div class="row">
@@ -524,7 +524,7 @@ function elegir_mv(id_indic,id_mv){
                 nom_ofi='<b>Responsable:</b> ' + obj_oficina.nombre;
             }
 
-            var btn_ofi=nom_ofi+'<button class="btn btn-link btn-sm" title="Cambiar responsable" onclick="cambiar_oficina('+mvi.id+','+mvi.id_responsable+')" data-bs-toggle="modal" data-bs-target="#mdl_oficinas"> <i class="bx bx-pencil"></i> </button>';
+            var btn_ofi=nom_ofi+'<button class="btn btn-link btn-sm" title="Cambiar responsable" onclick="cambiar_oficina('+mvi.id+','+mvi.id_responsable+')" data-toggle="modal" data-target="#mdl_oficinas"> <i class="fas fa-pen"></i> </button>';
             
             $('#div_responsable').html(btn_ofi);
 
@@ -763,7 +763,7 @@ function guardar_cambio(){
             var nombre_ofi='<span><b>Responsable:</b></span> <span class="text-danger"> Sin asignar </span>';
             if(data.nom_ofi!=''){ nombre_ofi='<b>Responsable:</b> ' + data.nom_ofi; }
 
-            var boton_ofi=nombre_ofi+'<button class="btn btn-link btn-sm" title="Cambiar responsable" onclick="cambiar_oficina('+id_indica+','+id_ofic+')" data-bs-toggle="modal" data-bs-target="#mdl_oficinas"> <i class="bx bx-pencil"></i> </button>';
+            var boton_ofi=nombre_ofi+'<button class="btn btn-link btn-sm" title="Cambiar responsable" onclick="cambiar_oficina('+id_indica+','+id_ofic+')" data-toggle="modal" data-target="#mdl_oficinas"> <i class="fas fa-pen"></i> </button>';
 
             $('#div_responsable').html(boton_ofi);
 

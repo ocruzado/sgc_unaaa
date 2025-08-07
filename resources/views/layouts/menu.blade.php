@@ -31,7 +31,7 @@
             @endif
 
             @if($cls_funcion->acceso_modulo(Auth::user()->id,5)!=0)
-                <li><a href="#">Reportes</a></li>
+                <li><a href="{{ route('lic_reportes') }}">Reportes</a></li>
             @endif
         </ul>
     </li>

@@ -21,7 +21,8 @@ use App\Http\Controllers\LicenController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    //return view('welcome');
+    return redirect()->route('home');
 });
 
 Auth::routes();
@@ -47,7 +48,7 @@ Route::post('/save_modulo', [MantenimController::class, 'guardar_modulo'])->name
 
 // LICENCIAMIENTO 
 Route::get('/mantenimiento_cbc', [LicenController::class, 'index'])->name('lic_inicio');
-
+Route::get('/reporte_cbc', [LicenController::class, 'reporte_avance'])->name('lic_reportes');
 
 Route::post('/lic19_save_evid24', [LicenController::class, 'guardar_evidencias24'])->name('lic_2019_evids24');
 Route::get('/lic19_oficina', [LicenController::class, 'cambiar_oficina'])->name('lic_2019_cambiar');
@@ -55,7 +56,7 @@ Route::get('/responsables_cbc', [LicenController::class, 'reporte_responsables']
 Route::post('/lic19_borrar_evid', [LicenController::class, 'borrar_evidencia'])->name('lic19_borrar_evid');
 Route::post('/lic19_save_mv', [LicenController::class, 'guardar_mv'])->name('lic19_guardar_mv');
 Route::get('/lic19_eval_mv', [LicenController::class, 'evaluar_mv'])->name('lic19_evalua_mv');
-Route::get('/reporte_cbc', [LicenController::class, 'reporte_avance'])->name('lic19_rpt_eval');
+
 Route::get('/evidencias_cbc', [LicenController::class, 'reporte_evidencias'])->name('lic19_pdf_evids');
 Route::get('/priorizados_cbc', [LicenController::class, 'reporte_priorizados'])->name('lic19_pdf_prios');
 Route::get('/priorizados_cbc_mod', [LicenController::class, 'reporte_priorizados_modelo'])->name('lic19_pdf_prios_mod');
