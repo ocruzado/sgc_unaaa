@@ -21,8 +21,8 @@ use App\Http\Controllers\LicenController;
 */
 
 Route::get('/', function () {
-    //return view('welcome');
-    return redirect()->route('home');
+    return view('welcome');
+    //return redirect()->route('home');
 });
 
 Auth::routes();
@@ -58,7 +58,7 @@ Route::post('/lic19_save_mv', [LicenController::class, 'guardar_mv'])->name('lic
 Route::get('/lic19_eval_mv', [LicenController::class, 'evaluar_mv'])->name('lic19_evalua_mv');
 
 Route::get('/evidencias_cbc', [LicenController::class, 'reporte_evidencias'])->name('lic19_pdf_evids');
-Route::get('/priorizados_cbc', [LicenController::class, 'reporte_priorizados'])->name('lic19_pdf_prios');
-Route::get('/priorizados_cbc_mod', [LicenController::class, 'reporte_priorizados_modelo'])->name('lic19_pdf_prios_mod');
-Route::get('/priorizados_evids', [LicenController::class, 'reporte_priorizados_evids'])->name('lic19_pdf_prios_evid');
 Route::get('/estado_cbc', [LicenController::class, 'reporte_estado_cbc'])->name('lic19_pdf_estado');
+Route::get('/detallado_cbc', [LicenController::class, 'reporte_detallado'])->name('lic_pdf_detallado');
+
+Route::get('/lic_jx_coment', [LicenController::class, 'agregar_comentario'])->name('lic_add_coment');

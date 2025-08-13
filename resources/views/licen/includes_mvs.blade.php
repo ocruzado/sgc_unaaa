@@ -32,9 +32,11 @@
                                 <i class="bx bx-x"></i> Cerrar
                             </button>
 
+                            @if(Auth::user()->rol==1)
                             <button class="btn btn-primary" type="button" id="btn_guardar_mv" onclick="guardar_mv()">
                                 <i class="bx bx-check"></i> Guardar
                             </button>
+                            @endif
 
                         </div>                        
                     </div>

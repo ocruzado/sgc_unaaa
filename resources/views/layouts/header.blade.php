@@ -223,7 +223,7 @@
                         <div class="dropdown d-inline-block user-dropdown">
                             <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="rounded-circle header-profile-user" src="https://cdn4.iconfinder.com/data/icons/users-groups-set-2/64/x-04-2-256.png"
+                                <img class="rounded-circle header-profile-user" src="{{ asset('img/usuario_2.png') }}"
                                     alt="Header Avatar">
                                 <span class="d-none d-xl-inline-block ml-1">
                                 	{{ Auth::user()->name }}

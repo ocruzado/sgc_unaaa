@@ -224,12 +224,12 @@ class LicenController extends Controller
         $dt_componente=LicComponentes::get();
         $dt_mv=LicMV::get();
 
-        $dt_indicadores=LicIndicadores::where('lic19_indicador.id','>',0)
-        ->join('lic19_componente','lic19_indicador.id_componente','=','lic19_componente.id')
-        ->select('lic19_indicador.*','lic19_componente.cod_componente','lic19_componente.nom_componente')
+        $dt_indicadores=LicIndicadores::where('lic_indicador.id','>',0)
+        ->join('lic_componente','lic_indicador.id_componente','=','lic_componente.id')
+        ->select('lic_indicador.*','lic_componente.cod_componente','lic_componente.nom_componente')
         ->get();
 
-        $pdf = PDF::loadView('lic2019.pdf_responsables_cbc',['dt_condiciones'=>$dt_condiciones,'dt_componente'=>$dt_componente,'dt_indicadores'=>$dt_indicadores,'dt_mv'=>$dt_mv])->setPaper('A4', 'portrait'); 
+        $pdf = PDF::loadView('licen.pdf_responsables_cbc',['dt_condiciones'=>$dt_condiciones,'dt_componente'=>$dt_componente,'dt_indicadores'=>$dt_indicadores,'dt_mv'=>$dt_mv])->setPaper('A4', 'portrait'); 
         //portrait, landscape
 
         return response($pdf->output())->header('Content-Type', 'application/pdf')
@@ -274,6 +274,28 @@ class LicenController extends Controller
         }
     }
 
+    public function agregar_comentario(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $id_registro=$request->get('id_registro');
+            $comentario=$request->get('comentario');
+
+
+            $dt=LicEvidencias::find($id_registro);
+            $dt->comentario=$comentario!='' ? $comentario : '';
+            $dt->save();
+
+
+            $dt_evidencias=LicEvidencias::where('anio_grupo',$this->anio_uso())->where('estado',1)->get();
+
+            $data=array('datos' =>'ok','dt_evidencias'=>$dt_evidencias);
+            echo json_encode($data);
+        }
+    }
+
+
+
 
 
     public function reporte_avance(Request $request)
@@ -317,102 +339,44 @@ class LicenController extends Controller
         $dt_componente=LicComponentes::get();
         $dt_mv=LicMV::where('aplica',1)->get();
 
-        $dt_indicadores=LicIndicadores::where('lic19_indicador.id','>',0)
-        ->join('lic19_componente','lic19_indicador.id_componente','=','lic19_componente.id')
-        ->select('lic19_indicador.*','lic19_componente.cod_componente','lic19_componente.nom_componente')
+        $dt_indicadores=LicIndicadores::where('lic_indicador.id','>',0)
+        ->join('lic_componente','lic_indicador.id_componente','=','lic_componente.id')
+        ->select('lic_indicador.*','lic_componente.cod_componente','lic_componente.nom_componente')
         ->get();
 
 
 
-        $pdf = PDF::loadView('lic2019.pdf_estado_cbc',['dt_condiciones'=>$dt_condiciones,'dt_componente'=>$dt_componente,'dt_indicadores'=>$dt_indicadores,'dt_mv'=>$dt_mv])->setPaper('A4', 'portrait');
+        $pdf = PDF::loadView('licen.pdf_estado_cbc',['dt_condiciones'=>$dt_condiciones,'dt_componente'=>$dt_componente,'dt_indicadores'=>$dt_indicadores,'dt_mv'=>$dt_mv])->setPaper('A4', 'portrait');
         //portrait, landscape
 
 
         return response($pdf->output())->header('Content-Type', 'application/pdf')
-        ->header('Content-Disposition', 'inline; filename=Reporte_priorizados_CBC.pdf'); 
+        ->header('Content-Disposition', 'inline; filename=Reporte_cumplimiento_MV.pdf'); 
     }
 
 
-
-
-
-
-
-
-
-
-
-    public function reporte_priorizados(Request $request)
+    public function reporte_detallado(Request $request)
     {
-        $dt_condiciones=LicCondiciones::where('priorizado',1)->get();
+        $dt_condiciones=LicCondiciones::get();
 
-        $dt_componente=LicComponentes::where('priorizado',1)->get();
-        $dt_mv=LicMV::get();
+        $dt_componente=LicComponentes::get();
+        $dt_mv=LicMV::where('aplica',1)->get();
 
-        $dt_indicadores=LicIndicadores::where('lic19_indicador.priorizado',1)
-        ->join('lic19_componente','lic19_indicador.id_componente','=','lic19_componente.id')
-        ->select('lic19_indicador.*','lic19_componente.cod_componente','lic19_componente.nom_componente')
+        $dt_indicadores=LicIndicadores::where('lic_indicador.id','>',0)
+        ->join('lic_componente','lic_indicador.id_componente','=','lic_componente.id')
+        ->select('lic_indicador.*','lic_componente.cod_componente','lic_componente.nom_componente')
         ->get();
 
 
 
-        $pdf = PDF::loadView('lic2019.pdf_priorizados',['dt_condiciones'=>$dt_condiciones,'dt_componente'=>$dt_componente,'dt_indicadores'=>$dt_indicadores,'dt_mv'=>$dt_mv])->setPaper('A4', 'portrait');
+        $pdf = PDF::loadView('licen.pdf_reporte_detallado',['dt_condiciones'=>$dt_condiciones,'dt_componente'=>$dt_componente,'dt_indicadores'=>$dt_indicadores,'dt_mv'=>$dt_mv])->setPaper('A3', 'landscape');
         //portrait, landscape
 
 
         return response($pdf->output())->header('Content-Type', 'application/pdf')
-        ->header('Content-Disposition', 'inline; filename=Reporte_priorizados_CBC.pdf'); 
+        ->header('Content-Disposition', 'inline; filename=Reporte_detallado_CBC.pdf'); 
     }
 
-
-
-    public function reporte_priorizados_modelo(Request $request)
-    {
-        $dt_condiciones=LicCondiciones::where('priorizado',1)->get();
-
-        $dt_componente=LicComponentes::where('priorizado',1)->get();
-        $dt_mv=LicMV::get();
-
-        $dt_indicadores=LicIndicadores::where('lic19_indicador.priorizado',1)
-        ->join('lic19_componente','lic19_indicador.id_componente','=','lic19_componente.id')
-        ->select('lic19_indicador.*','lic19_componente.cod_componente','lic19_componente.nom_componente')
-        ->get();
-
-
-
-        $pdf = PDF::loadView('lic2019.pdf_priorizados_modelo',['dt_condiciones'=>$dt_condiciones,'dt_componente'=>$dt_componente,'dt_indicadores'=>$dt_indicadores,'dt_mv'=>$dt_mv])->setPaper('A4', 'landscape');
-        //portrait, landscape
-
-
-        return response($pdf->output())->header('Content-Type', 'application/pdf')
-        ->header('Content-Disposition', 'inline; filename=Reporte_priorizados_modelo.pdf'); 
-    }
-
-
-
-    public function reporte_priorizados_evids(Request $request)
-    {
-        $dt_condiciones=LicCondiciones::where('priorizado',1)->get();
-
-        $dt_componente=LicComponentes::where('priorizado',1)->get();
-        $dt_mv=LicMV::get();
-
-        $dt_indicadores=LicIndicadores::where('lic19_indicador.priorizado',1)
-        ->join('lic19_componente','lic19_indicador.id_componente','=','lic19_componente.id')
-        ->select('lic19_indicador.*','lic19_componente.cod_componente','lic19_componente.nom_componente')
-        ->get();
-
-
-        $dt_evidencias=LicEvidencias::where('anio_grupo',$this->anio_uso())->where('estado',1)->get();
-
-
-        $pdf = PDF::loadView('lic2019.pdf_priorizados_evids',['dt_condiciones'=>$dt_condiciones,'dt_componente'=>$dt_componente,'dt_indicadores'=>$dt_indicadores,'dt_mv'=>$dt_mv,'dt_evidencias'=>$dt_evidencias])->setPaper('A4', 'portrait');
-        //portrait, landscape
-
-
-        return response($pdf->output())->header('Content-Type', 'application/pdf')
-        ->header('Content-Disposition', 'inline; filename=Reporte_evidencias_CBC.pdf'); 
-    }
 
 
 

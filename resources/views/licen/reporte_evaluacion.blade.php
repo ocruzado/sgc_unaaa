@@ -244,7 +244,19 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header"> REPORTE DE CUMPLIMIENTO DE LAS CONDICIONES BÁSICAS DE CALIDAD </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-9">
+                    <h5 style="margin: 0px;">REPORTE DE CUMPLIMIENTO DE LAS CONDICIONES BÁSICAS DE CALIDAD</h5>
+                  </div>
+                  <div class="col-lg-3" style="text-align: right;">
+                      <a href="{{ route('lic_pdf_detallado') }}" target="_blank" class="btn btn-primary btn-rounded waves-effect waves-light">
+                        <i class="fas fa-file-alt"></i>  Generar reporte
+                      </a>
+                  </div>
+                </div>
+                
+              </div>
             </div>
         </div>
     </div>
@@ -333,11 +345,11 @@
                       <h6 class="m-0" style="text-align: center;">Reporte de cumplimiento - Por MV</h6>
                     </div>
                     <div style="width: 50%;text-align: right;">
-                      <!-- 
+                      
                       <a href="{{ route('lic19_pdf_estado') }}" target="_blank" class="btn btn-warning btn-sm radius-30">
                         Reporte por MV
                       </a>
-                       -->
+                      
                     </div>
                   </div>
 

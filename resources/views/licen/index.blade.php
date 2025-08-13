@@ -81,8 +81,8 @@ html, body {
     $lst_evals=json_encode($dt_eval);
 
 
-
-
+    $tipo_usu='';
+    if(Auth::user()->rol==1){ $tipo_usu='admi'; }
 
 
 ?>
@@ -287,6 +287,91 @@ html, body {
 
 
 
+<!-- Cambiar oficina -->
+<div class="modal fade" id="mdl_comentario" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> Comentarios de la evidencia </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <input type="hidden" id="id_evidencia" name="id_evidencia">
+
+                <div class="form-group row mb-3">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <label class="form-label">Comentarios:</label> 
+                        <textarea class="form-control" id="txt_coment" name="comentario" rows="2"></textarea>
+                    </div>
+                </div>
+                <br>
+            
+                <div class="row justify-content-center mb-3">
+                    <div class="col-lg-11">
+                        <div class="d-flex" style="justify-content: right;">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal" style="margin-right: 10px;" id="btn_close_coment">
+                                <i class="bx bx-x"></i> Cerrar
+                            </button>
+
+                            <button class="btn btn-primary" type="button" id="btn_cambiar_coment" onclick="guardar_comentario()">
+                                <i class="bx bx-check"></i> Guardar
+                            </button>
+                        </div>                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    
+function add_comentario(id_docum) {
+    $('#id_evidencia').val(id_docum);
+    $('#txt_coment').val($('#txt_coment_'+id_docum).val());
+
+    $('#btn_cambiar_coment').prop('disabled',false);
+    $('#btn_cambiar_coment').html('<i class="bx bx-check"></i> Guardar');
+
+}
+
+function guardar_comentario() {
+
+    var c_id=$('#id_evidencia').val();
+    var c_coment=$('#txt_coment').val();
+
+    $('#btn_cambiar_coment').prop('disabled',true);
+    $('#btn_cambiar_coment').html('<i class="bx bx-loader"></i> Guardando...');
+
+    $.ajax({
+        url: "{{ route('lic_add_coment') }}",
+        data: {id_registro:c_id,comentario:c_coment},
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            arr_evidencias=data.dt_evidencias;
+            $('#btn_close_coment').click();
+            $('#txt_coment_'+c_id).val(c_coment);
+            $('#div_coment_'+c_id).html(c_coment);
+        }
+    }); 
+}
+
+
+</script>
+
+
+
+
+
 
 
 
@@ -304,11 +389,11 @@ html, body {
                                 <i class="ri-arrow-right-s-line text-primary"></i>  
                                 Mantenimiento de las CBC
 
-<!-- 
-                                <a href="{{ route('lic_2019_pdf_ofis') }}" class="btn btn-info px-3 radius-30 btn-sm" target="_blank" style="margin-left: 10px;">
-                                    <i class="bx bx-file"></i> Responsables
+
+                                <a href="{{ route('lic_2019_pdf_ofis') }}" class="btn btn-primary btn-rounded btn-sm" target="_blank" style="margin-left: 10px;">
+                                    <i class="fas fa-user-friends"></i> Responsables
                                 </a>
- -->
+
 
                             </h5> 
                         </div>
@@ -383,7 +468,7 @@ html, body {
                                         <button class="btn btn-secondary px-3 btn-rounded btn-sm" type="button" onclick="ver_mv()" data-toggle="modal" data-target="#mdl_mvs" style="margin-right: 5px;">
                                             <i class="fas fa-info-circle"></i> consideraciones
                                         </button>
-                                        <button class="btn btn-success px-3 btn-rounded btn-sm" type="button" onclick="subir_evid_actual()" data-toggle="modal" data-target="#mdl_datos_24"> 
+                                        <button class="btn btn-success px-3 btn-rounded btn-sm" type="button" onclick="subir_evid_actual()" id="btn_registrar" data-toggle="modal" data-target="#mdl_datos_24" style="display: none;"> 
                                             <i class="fas fa-plus"></i> Registrar evidencia
                                         </button>
                                     </div>
@@ -392,10 +477,11 @@ html, body {
                                         <thead style="background-color: #7ab5e3;color: #fff;">
                                             <th>#</th>
                                             <th>Evidencias</th>
-                                            <th>Fuente</th>
+                                            <th>Comentarios</th>
                                             <th>Opciones</th>
                                         </thead>
                                         <tbody id="tbl_datos_24">
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -524,7 +610,23 @@ function elegir_mv(id_indic,id_mv){
                 nom_ofi='<b>Responsable:</b> ' + obj_oficina.nombre;
             }
 
-            var btn_ofi=nom_ofi+'<button class="btn btn-link btn-sm" title="Cambiar responsable" onclick="cambiar_oficina('+mvi.id+','+mvi.id_responsable+')" data-toggle="modal" data-target="#mdl_oficinas"> <i class="fas fa-pen"></i> </button>';
+            if((mvi.id_responsable=="{{ Auth::user()->id_oficina }}" && "{{ Auth::user()->rol }}"==3)|| "{{ $tipo_usu }}" =='admi'){
+                $('#btn_registrar').show();
+                $('#estado_doc').prop('disabled',false);
+            }else{
+                $('#btn_registrar').hide();
+                $('#estado_doc').prop('disabled',true);
+            }
+
+            
+
+
+            var btn_respon='';
+            if("{{ $tipo_usu }}"=='admi'){
+                btn_respon='<button class="btn btn-link btn-sm" title="Cambiar responsable" onclick="cambiar_oficina('+mvi.id+','+mvi.id_responsable+')" data-toggle="modal" data-target="#mdl_oficinas"> <i class="fas fa-pen"></i> </button>'
+            }
+
+            var btn_ofi=nom_ofi+btn_respon;
             
             $('#div_responsable').html(btn_ofi);
 
@@ -628,6 +730,19 @@ function ver_evidencias_actuales(id_indic,id_mv) {
     var items_2024=1;
     var fila_evidencias2='';
     var obj_evids_actual = arr_evidencias.filter(evid => evid.id_mv === id_mv && evid.anio_grupo === anio_elegido*1);
+
+    let edit_evid='none';
+    var obj_medio=arr_mvs.find(medio => medio.id === id_mv);
+    if(obj_medio.id_responsable=="{{ Auth::user()->id_oficina }}" || "{{ $tipo_usu }}" =='admi'){
+        edit_evid='block';
+    }
+
+
+    let edit_coment='none';
+    if(obj_medio.id_responsable=="{{ Auth::user()->id_oficina }}" || "{{ $tipo_usu }}" =='admi' || "{{ Auth::user()->rol }}"==2){
+        edit_coment='block';
+    }
+
     obj_evids_actual.forEach(function(eviden) {
         
             var url_evid='';
@@ -646,19 +761,31 @@ function ver_evidencias_actuales(id_indic,id_mv) {
            fila_evidencias2+=`<tr id="fila_${eviden.id}">
                 <td>${items_2024}</td>
                 <td style="font-size:10pt;"><a href="${url_evid}" target="_blank"> ${eviden.nom_evidencia} </a></td>
-                <td style="font-size:10pt;"><small style="background-color: #63779C;color: #fff;padding: 3px;border-radius: 5px;"> ${txt_fuente} </small></td>
+                <td style="font-size:10pt;">
+                    <div class="d-flex"> 
+                        <div>
+                            <button type="button" class="btn btn-light waves-effect btn-sm text-primary" data-toggle="modal" data-target="#mdl_comentario" onclick="add_comentario(${eviden.id})" style="display:${edit_coment}">
+                                <i class="far fa-comment-alt"></i>
+                            </button>
+                            <input type="hidden" id="txt_coment_${eviden.id}" value="${eviden.comentario || ''}">
+                        </div>
+                        <div style="width:100%;margin-left:5px;" id="div_coment_${eviden.id}">
+                            ${eviden.comentario || ''}
+                        </div>
+                    </div>
+                </td>
                 <td>
                     <input type="hidden" id="txt_nom_${eviden.id}" value="${eviden.nom_evidencia}">
                     <input type="hidden" id="txt_url_${eviden.id}" value="${eviden.adjunto}">
 
                     <div class="d-flex">
-                    <button class="btn btn-link btn-sm" type="button" title="Editar" onclick="editar_evid24(${id_indic},${eviden.id_mv},${eviden.id},'${eviden.tipo_docu}',${eviden.id_sisades},${eviden.id_sgc},${eviden.sgc_niv0},${eviden.sgc_niv1})" data-toggle="modal" data-target="#mdl_datos_24"> 
-                        <i class="fas fa-pen"></i> 
-                    </button>
+                        <button class="btn btn-link btn-sm" type="button" title="Editar" onclick="editar_evid24(${id_indic},${eviden.id_mv},${eviden.id},'${eviden.tipo_docu}',${eviden.id_sisades},${eviden.id_sgc},${eviden.sgc_niv0},${eviden.sgc_niv1})" data-toggle="modal" data-target="#mdl_datos_24" style="display:${edit_evid}"> 
+                            <i class="fas fa-pen"></i> 
+                        </button>
 
-                    <button class="btn btn-link btn-sm" type="button" title="Eliminar" data-toggle="modal" data-target="#mdl_borrar" onclick="eliminar(${eviden.id})"> 
-                        <i class="fas fa-trash-alt"></i> 
-                    </button>
+                        <button class="btn btn-link btn-sm" type="button" title="Eliminar" data-toggle="modal" data-target="#mdl_borrar" onclick="eliminar(${eviden.id})" style="display:${edit_evid}"> 
+                            <i class="fas fa-trash-alt"></i> 
+                        </button>
                     </div>
 
                 </td>

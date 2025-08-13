@@ -24,12 +24,14 @@
 
                 <div class="row justify-content-center mb-3">
                     <div class="col-md-2">
-                        <label for="" class="form-label">Tipo usuario:</label>
+                        <label for="" class="form-label">Rol:</label>
                     </div>
                     <div class="col-md-5">
                         <select class="form-control" name="tipo" id="tipo" required>
                             <option value="">- - Seleccione - -</option>
-                            <option value="3">OFICINAS</option>
+                            <option value="1">Administrador</option>
+                            <option value="2">Visualizador de Indicadores</option>
+                            <option value="3">Responsable de Indicador</option>
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -194,7 +196,7 @@
                         <table id="example" class="table table-striped table-bordered" style="width:100%">
                             <thead style="background-color: #059adb;color: #fff;">
                                 <th>Opciones</th>
-                                
+                                <th>Rol</th>
                             	<th>Nombre</th>
                                 <th>Correo</th>
                                 <th>Órgano / Unidad orgánica</th>
@@ -221,10 +223,8 @@
                                         </button>
                                         <input type="hidden" id="etiqueta_{{ $row->id }}" value="{{ $row->etiqueta }}">
                                     </td> 
-                                  
-                                    <td>
-                                        {{ $row->name }} 
-                                    </td>
+                                    <td>{{ $funciones->nom_rol($row->rol) }} </td>
+                                    <td>{{ $row->name }}</td>
                                     <td>{{ $row->email }}</td>
                                     <td>
                                         {{ $nom_car }}
@@ -289,13 +289,7 @@ function editar(id,nom,correo,tipo,id_ofi,estado) {
     $('#id_registro').val(id)
     $('#nombre').val(nom)
     $('#correo').val(correo)
-    if (id!=1) {
-        $('#tipo').val(tipo);
-        $('#tipo').prop('required',true)
-    }else{
-        $('#tipo').val('');
-        $('#tipo').prop('required',false)
-    }
+    $('#tipo').val(tipo);
 
     var v_ofi=id_ofi!=0 ? id_ofi : '';
     $('#oficina').val(v_ofi).trigger('change');

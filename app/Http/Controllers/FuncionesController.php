@@ -15,7 +15,7 @@ use App\Models\Oficinas;
 
 use App\Models\PermisoUsuario;
 
-
+use App\Models\Roles;
 use App\Models\User;
 use App\Models\Modulos;  
 
@@ -34,6 +34,11 @@ class FuncionesController extends Controller
 {
 
 
+    public function nom_rol($id)
+    {
+        $dt=Roles::find($id);
+        return $dt->nom_rol;
+    }
 
     public function nom_responsable($id)
     {

@@ -39,7 +39,7 @@ class UsuariosController extends Controller
 
         $dt_modulos=Modulos::where('nivel','<=',1)->get();
 
-        if (Auth::user()->id==1 || Auth::user()->id==26) {
+        if (Auth::user()->rol==1 || Auth::user()->id==1) {
             return view('usuarios',['datos'=>$dt,'dt_modulos'=>$dt_modulos,'dt_oficina'=>$dt_oficina]);
         }else{
             return redirect()->route('home');
@@ -50,11 +50,8 @@ class UsuariosController extends Controller
     public function guardar_usuario(Request $request)
     {       
         
-        $id_rol= 3;
-
-
-
-
+  
+        $id_rol=$request->tipo;
         if ($request->id_registro!='') {
 
             $dt=User::find($request->id_registro);
@@ -65,7 +62,7 @@ class UsuariosController extends Controller
                 $dt->key_usu=Crypt::encryptString($request->clave);
             }
             
-            if($request->id_registro!=1){ $dt->rol=$id_rol; }
+            $dt->rol=$id_rol;
             $dt->id_oficina=$request->oficina;
             $dt->estado=$request->estado;
             $dt->etiqueta=$request->etiqueta!='' ? $request->etiqueta : '';
