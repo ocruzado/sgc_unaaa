@@ -14,7 +14,10 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
+        dump('aqui');
+        dump(! $request->expectsJson());
         if (! $request->expectsJson()) {
+            dump('go login');
             return route('login');
         }
     }
